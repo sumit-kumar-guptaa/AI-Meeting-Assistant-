@@ -1,7 +1,7 @@
 from langchain_mistralai import ChatMistralAI
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.output_parsers import StrOutputParser, StructuredOutputParser
-from langchain_text_splitter import RecursiveCharacterTextSplitter # type: ignore
+from langchain_core.output_parsers import StrOutputParser
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.runnables import RunnablePassthrough, RunnableLambda
 
 import os
@@ -46,3 +46,32 @@ def summarize(transcript: str) -> str:
             ("human", "{text}"),
         ]
     )
+
+    combined_chain = (
+        RunnablePassthrough() | RunnableLambda(lambda x: {"text": x}) |combined_prompt | llm | StrOutputParser()
+    )
+
+    return combined_chain.invoke({"text": combined})
+
+def generate_title(transcript: str) -> str:
+    llm = get_llm()
+
+   
+
+    title_chain = (
+        RunnablePassthrough()
+        | RunnableLambda(lambda x: {"text": x})
+        | ChatPromptTemplate.from_messages(
+            [
+                (
+                    "system",
+                    "Based on athe meeting transcript, generate a short professional meeting title."
+                    "(max 8 words). Only return the title, nothing else.",
+                ),
+                ("human", "{text}"),
+            ]
+        )
+        | llm
+        | StrOutputParser()
+    )
+    return title_chain.invoke({"text": transcript[:2000]})
