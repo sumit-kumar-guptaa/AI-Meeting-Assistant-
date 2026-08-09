@@ -40,8 +40,7 @@ def summarize(transcript: str) -> str:
         [
             (
                 "system",
-                "You are an expert meeting summarizer. combine these partial summaries into a single, coherent summary. Ensure the final summary is concise and captures all key points.",
-                "into one final professional meeting summary in bullet points format.",
+                "You are an expert meeting summarizer. combine these partial summaries into a single, coherent summary. Ensure the final summary is concise and captures all key points into one final professional meeting summary in bullet points format.",
             ),
             ("human", "{text}"),
         ]
